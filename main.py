@@ -3,13 +3,35 @@ def main():
     text = get_book_text(book_path)
     num_words = get_num_words(text)
     chars_dict = get_chars_dict(text)
-    #print(chars_dict)
-    list_of_dictionaries = to_list_of_dict(chars_dict)
-    report(list_of_dictionaries,book_path,num_words)
+    chars_sorted_list = chars_dict_to_sorted_list(chars_dict)
+
+    print(f"--- Begin report of {book_path} ---")
+    print(f"{num_words} words found in the document")
+    print()
+
+    for item in chars_sorted_list:
+        if not item["char"].isalpha():
+            continue
+        print(f"The '{item['char']}' character was found {item['num']} times")
+
+    print("--- End report ---")
+
 
 def get_num_words(text):
     words = text.split()
     return len(words)
+
+
+def sort_on(d):
+    return d["num"]
+
+
+def chars_dict_to_sorted_list(num_chars_dict):
+    sorted_list = []
+    for ch in num_chars_dict:
+        sorted_list.append({"char": ch, "num": num_chars_dict[ch]})
+    sorted_list.sort(reverse=True, key=sort_on)
+    return sorted_list
 
 
 def get_chars_dict(text):
@@ -26,30 +48,6 @@ def get_chars_dict(text):
 def get_book_text(path):
     with open(path) as f:
         return f.read()
-
-
-def to_list_of_dict(dictionary):
-    list_of_dict = []
-    for key in dictionary:
-        if key.isalpha():
-            list_of_dict.append({"char" : key, "count" : dictionary[key]})
-    list_of_dict.sort(reverse=True, key=sort_on)
-    return list_of_dict
-
-
-def sort_on(dict):
-    return dict["count"]
-
-
-def report(list_of_dictionaries, file_path, words_found):
-    print(f"--- Begin report of {file_path} ---")
-    print(f"{words_found} words found in the document")
-    for i in range(0,len(list_of_dictionaries)):
-        key = list_of_dictionaries[i]['char']
-        value = list_of_dictionaries[i]['count']
-        print(f"The '{key}' character was found {value} times")
-    print('--- End report ---')
-
 
 
 main()
